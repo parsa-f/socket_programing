@@ -1,60 +1,47 @@
-# Python Socket Chat
+# Phase 1: Single-Client Chat Server
 
-A minimal command-line chat application using Python sockets.
+## Overview
+This project implements a basic single-client chat server using Python's `socket` module. The server allows one client to connect, exchange messages, and gracefully handle disconnections.
 
-## How It Works
+## Features
+- Single-client support.
+- Interactive communication between the server and the client.
+- Graceful handling of client disconnections.
+- Server shutdown with a clean exit.
 
-### Server (`server.py`)
-```python
-# Core functionality:
-server_socket.bind((HOST, PORT))  # Binds to local IP
-server_socket.listen()            # Waits for connection
-client_socket.send()/recv()       # Handles message exchange
+## Requirements
+- Python 3.x
+- `termcolor` library for colored terminal output.
 
-Client (client.py)
-# Core functionality: 
-client_socket.connect((HOST, PORT))  # Connects to server
-client_socket.send()/recv()         # Sends/receives messages
+## Installation
+1. Install the required library:
+   ```bash
+   pip install termcolor
+   ```
 
-Key Features
-Single client-server connection
+## How to Run
+1. Navigate to the `Phase1` directory:
+   ```bash
+   cd "c:\Users\Parsa\Desktop\socket programing\Phase1"
+   ```
+2. Start the server:
+   ```bash
+   python server.py
+   ```
+3. Connect a client using a socket client (e.g., Telnet or a custom client script).
 
-Basic message exchange
+## Server Commands
+- `/exit`: Disconnect the client or shut down the server.
 
-/exit command to quit
+## File Structure
+- `server.py`: The main server script.
+- `README.md`: Documentation for the project.
 
-Localhost operation (127.0.0.1)
+## Notes
+- The server listens on `0.0.0.0:12345` by default. Modify the `server.py` file to change the host or port if needed.
+- Only one client can connect at a time in this phase.
 
-##Setup
-Install requirements:
-
-bash
-
-pip install termcolor
-Run in separate terminals:
-
-bash
-
-# Terminal 1:
-python server.py
-
-# Terminal 2: 
-python client.py
-
-Usage Notes
-Type messages in either terminal
-
-First run server, then client
-
-Use /exit to close connection
-
-Colored output works best in Linux/Mac terminals
-
-Technical Specs
-Protocol: TCP/IP
-
-Port: 12345
-
-Encoding: UTF-8
-
-Buffer: 1024 bytes
+## Future Improvements
+- Add support for multiple clients.
+- Implement a more robust protocol for communication.
+- Add encryption for secure communication.
