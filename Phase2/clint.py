@@ -10,7 +10,7 @@ def receive_messages(connection):
             if not message:
                 print("\n[!] Connection closed by server")
                 break
-            print(f"\n{message}\nYou: ", end="")
+            print(f"{message}\n", end="")
         except:
             print("\n[!] Lost connection to server")
             break

@@ -1,7 +1,7 @@
 # Import necessary PyQt6 modules for GUI components
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QLabel, QLineEdit, \
     QPushButton, QRadioButton, QTextEdit, QGridLayout, QMessageBox
-from PyQt6.QtGui import QIcon, QIntValidator
+from PyQt6.QtGui import QIcon, QIntValidator, QFont
 from PyQt6.QtCore import pyqtSignal, QObject
 
 # Import standard library modules
@@ -92,29 +92,53 @@ class ChatApplication(QMainWindow):
         connection_layout.addWidget(self.user_name_label, 1, 0)
         connection_layout.addWidget(self.user_name_input, 1, 1, 1, 3)
 
-        # Text color selection
-        self.text_color_selection_label = QLabel("Text Color:")
-        self.default_color_radio = QRadioButton("Black")
-        self.default_color_radio.setObjectName("blackRadio")
-        self.default_color_radio.setChecked(True)
-        self.red_color_radio = QRadioButton("Red")
-        self.red_color_radio.setObjectName("redRadio")
-        self.green_color_radio = QRadioButton("Green")
-        self.green_color_radio.setObjectName("greenRadio")
-        self.blue_color_radio = QRadioButton("Blue")
-        self.blue_color_radio.setObjectName("blueRadio")
-
-        color_selection_layout = QHBoxLayout()
-        color_selection_layout.addWidget(self.text_color_selection_label)
-        color_selection_layout.addWidget(self.default_color_radio)
-        color_selection_layout.addWidget(self.red_color_radio)
-        color_selection_layout.addWidget(self.green_color_radio)
-        color_selection_layout.addWidget(self.blue_color_radio)
-        color_selection_layout.addStretch()
-
         # Connection buttons
         self.connect_server_button = QPushButton("Connect")
+        self.connect_server_button.setStyleSheet("""
+    /* Connect button style */
+    QPushButton {
+        background-color: #4CAF50;  /* Green color */
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    
+    QPushButton:hover {
+        background-color: #45a049;  /* Darker green on hover */
+    }
+    
+    QPushButton:pressed {
+        background-color: #388E3C;  /* Even darker when pressed */
+    }
+    
+    QPushButton:disabled {
+        background-color: #cccccc;  /* Gray when disabled */
+        color: #666666;
+    }
+    """)
         self.disconnect_server_button = QPushButton("Disconnect")
+        self.disconnect_server_button.setStyleSheet("""
+    /* Connect button style */
+    QPushButton {
+        background-color: #e71b1b;  /* red color */
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    
+    QPushButton:hover {
+        background-color: #9c0f0f;
+    }
+    
+    QPushButton:disabled {
+        background-color: #cccccc;
+        color: #666666;
+    }
+    """)
         self.disconnect_server_button.setEnabled(False)
 
         # Connect signals
@@ -128,7 +152,6 @@ class ChatApplication(QMainWindow):
 
         # Combine layouts
         bottom_row_container = QHBoxLayout()
-        bottom_row_container.addLayout(color_selection_layout)
         bottom_row_container.addLayout(button_container_layout)
         connection_layout.addLayout(bottom_row_container, 2, 0, 1, 4)
 
@@ -157,6 +180,30 @@ class ChatApplication(QMainWindow):
         self.message_composition_input.returnPressed.connect(self.transmit_chat_message)
 
         self.send_message_button = QPushButton("Send")
+        self.send_message_button.setStyleSheet("""
+    /* Connect button style */
+    QPushButton {
+        background-color: #4CAF50;  /* Green color */
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+    
+    QPushButton:hover {
+        background-color: #45a049;  /* Darker green on hover */
+    }
+    
+    QPushButton:pressed {
+        background-color: #388E3C;  /* Even darker when pressed */
+    }
+    
+    QPushButton:disabled {
+        background-color: #cccccc;  /* Gray when disabled */
+        color: #666666;
+    }
+    """)
         self.send_message_button.clicked.connect(self.transmit_chat_message)
         self.send_message_button.setEnabled(False)
 
@@ -179,24 +226,11 @@ class ChatApplication(QMainWindow):
         try:
             server_port = int(server_port)
             client_socket.connect((server_address, server_port))
-
-            selected_color = "black"
-            if self.red_color_radio.isChecked():
-                selected_color = "red"
-            elif self.green_color_radio.isChecked():
-                selected_color = "green"
-            elif self.blue_color_radio.isChecked():
-                selected_color = "blue"
-
-            self.default_color_radio.setEnabled(False)
-            self.red_color_radio.setEnabled(False)
-            self.green_color_radio.setEnabled(False)
-            self.blue_color_radio.setEnabled(False)
             self.user_name_input.setEnabled(False)
             self.server_address_input.setEnabled(False)
             self.port_number_input.setEnabled(False)
 
-            client_socket.send(f"{username}|{selected_color}".encode('utf-8'))
+            client_socket.send(f"{username}".encode('utf-8'))
 
             message_receiver_thread = threading.Thread(target=self.listen_for_incoming_messages)
             message_receiver_thread.daemon = True
@@ -221,10 +255,6 @@ class ChatApplication(QMainWindow):
             self.connect_server_button.setEnabled(True)
             self.disconnect_server_button.setEnabled(False)
             self.send_message_button.setEnabled(False)
-            self.default_color_radio.setEnabled(True)
-            self.red_color_radio.setEnabled(True)
-            self.green_color_radio.setEnabled(True)
-            self.blue_color_radio.setEnabled(True)
 
     def transmit_chat_message(self):
         """Send a message to the chat server."""
@@ -264,9 +294,9 @@ class ChatApplication(QMainWindow):
 
         if "|" in message:
             message_parts = message.split("|", 2)
-            if len(message_parts) == 3:
-                username, color, message_content = message_parts
-                html_content = f'<span style="color:{color}"><b>{username}:</b> {message_content}</span> ({datetime.now().strftime("%H:%M")})'
+            if len(message_parts) == 2:
+                username, message_content = message_parts
+                html_content = f'<b>{username}:</b> {message_content} ({datetime.now().strftime("%H:%M")})'
                 self.chat_history_display.append(html_content)
                 return
 

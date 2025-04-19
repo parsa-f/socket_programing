@@ -24,7 +24,7 @@ class ChatServer:
         """Manage individual client connections"""
         try:
             # Get nickname
-            client.send("Nick Name".encode('utf-8'))
+            client.send("Nick Name ".encode('utf-8'))
             nickname = client.recv(1024).decode('utf-8')
             
             self.nicknames.append(nickname)

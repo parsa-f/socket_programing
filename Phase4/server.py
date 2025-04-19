@@ -8,13 +8,13 @@ server_socket.bind((socket.gethostbyname(socket.gethostname()), 12345))
 server_socket.listen()
 
 # Client management dictionaries
-connected_clients = {}  # socket: (username, color)
+connected_clients = {}  # socket: username
 username_socket_mapping = {}  # username: socket
 
 
 def get_current_clients_list():
     """Return formatted string of currently connected clients."""
-    return "\n".join([f"{name} (Color: {color})" for _, (name, color) in connected_clients.items()])
+    return "\n".join([f"{name}" for _, name in connected_clients.items()])
 
 
 def broadcast_message_to_all(message_content):
@@ -41,7 +41,7 @@ def handle_client_communication(client_connection):
                 message_parts = received_message.split(" ", 2)
                 if len(message_parts) == 3:
                     recipient_username, private_message = message_parts[1], message_parts[2]
-                    sender_username, _ = connected_clients[client_connection]
+                    sender_username = connected_clients[client_connection]
 
                     if recipient_username in username_socket_mapping:
                         recipient_socket = username_socket_mapping[recipient_username]
@@ -56,16 +56,16 @@ def handle_client_communication(client_connection):
             if received_message.lower() == "/exit":
                 raise Exception
 
-            client_username, client_color = connected_clients[client_connection]
-            formatted_chat_message = f"{client_username}|{client_color}|{received_message}"
+            client_username = connected_clients[client_connection]
+            formatted_chat_message = f"{client_username}|{received_message}"
             broadcast_message_to_all(formatted_chat_message.encode("utf-8"))
 
         except:
             if client_connection in connected_clients:
-                client_username, client_color = connected_clients[client_connection]
+                client_username = connected_clients[client_connection]
                 connected_clients.pop(client_connection)
                 client_connection.close()
-                broadcast_message_to_all(f"{client_username}|{client_color}|has left the server".encode("utf-8"))
+                broadcast_message_to_all(f"{client_username}|has left the server".encode("utf-8"))
                 print(f"{client_username} ({client_address}) has left the server.")
                 print("*" * 30)
                 print(get_current_clients_list())
@@ -83,23 +83,15 @@ def accept_client_connections():
         print("*" * 30)
 
         try:
-            client_credentials = client_connection.recv(1024).decode('utf-8').split('|')
-            client_username = client_credentials[0]
-            client_color = client_credentials[1] if len(client_credentials) > 1 else "black"
-
+            client_username = client_connection.recv(1024).decode('utf-8')
             username_socket_mapping[client_username] = client_connection
+            connected_clients.update({client_connection: client_username})
 
-            valid_colors = ("black", "red", "green", "blue")
-            if client_color not in valid_colors:
-                client_color = "black"
-
-            connected_clients.update({client_connection: (client_username, client_color)})
-
-            print(f"client: {client_username} {str(client_connection)[-27:-1]} with color {client_color}")
+            print(f"client: {client_username} {str(client_connection)[-27:-1]}")
             print("*" * 30)
 
             client_connection.send(f"welcome {client_username}\n".encode('utf-8'))
-            broadcast_message_to_all(f"{client_username}|{client_color}|has joined the server".encode("utf-8"))
+            broadcast_message_to_all(f"{client_username}|has joined the server".encode("utf-8"))
 
         except:
             print(f"({str(client_connection)[-25:-2]}) has left the server.")
