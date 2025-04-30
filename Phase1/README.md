@@ -30,6 +30,8 @@ This project implements a basic single-client chat server using Python's `socket
    ```
 3. Connect a client using a socket client (e.g., Telnet or a custom client script).
 
+![alt text](image.png)![alt text](image-1.png)
+![alt text](image-2.png)![alt text](image-3.png)
 ## Server Commands
 - `/exit`: Disconnect the client or shut down the server.
 
