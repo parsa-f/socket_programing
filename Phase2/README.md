@@ -24,7 +24,7 @@ This project implements a simple multi-client chat server using Python's `socket
    python server.py
    ```
 3. Connect clients using a socket client (e.g., Telnet or a custom client script).
-
+![alt text](image.png) ![alt text](image-1.png) ![alt text](image-2.png)
 ## Server Commands
 - `/exit`: Disconnect a client from the server.
 - Server shutdown: Use `Ctrl+C` to stop the server, which will notify all connected clients.
