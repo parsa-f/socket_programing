@@ -42,6 +42,7 @@ This project implements a graphical chat client using Python's `PyQt6` for the u
 5. **Send Messages**:
    - Type your message in the input field and press "Send" or hit Enter.
    - To disconnect, click the "Disconnect" button.
+   ![alt text](image.png) ![alt text](image-1.png)
 
 ## Application Details
 
