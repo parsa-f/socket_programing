@@ -31,7 +31,7 @@ This project implements a simple multi-client chat server using Python's `socket
 3. **Send Messages**:
    - Type and send messages to broadcast them to all connected clients.
    - Type `/exit` to disconnect from the server.
-
+![alt text](image.png) ![alt text](image-1.png)
 ## Server Details
 
 - **Host**: The server binds to the local machine's hostname.
